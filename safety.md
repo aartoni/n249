@@ -10,6 +10,8 @@ Disconnect the battery using a non-conductive tool (e.g., a toothpick). After th
 
 Remove the back cover and insulate the circuit with electrical tape, be sure to isolate all of the parts that you may touch while working on the PCB (leaving the four pins out).
 
-![Taped PCB](assets/taped.webp)
+<p align="center">
+  <img alt="Taped PCB" src="assets/taped.webp" width="70%">
+</p>
 
 Now your device should be safe enough to work on, remember to discharge the capacitors everytime you want to prevent shorting the circuit.
