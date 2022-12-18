@@ -75,3 +75,39 @@ env GITDIR=$PWD TOOLCHAINDIR=$PWD/toolchain/armv7l-linux-musleabihf-cross/ THREA
 ```
 
 You should see the built kernel in `kernel/out/n249/zImage-root`.
+
+## Installing InkBox
+
+Perform a [backup](backup.md), we will start from the bootloader.
+
+### Installing the bootloader
+
+Write the bootloader on the whole device.
+
+```sh
+dd if=bootloader/out/u-boot_inkbox.n249.imx of=/dev/<microsd> bs=1K seek=1
+```
+
+Setup a [serial connection](serial.md), then connect the e-reader to a computer with the USB cable and execute `ums 0 mmc 0` in the U-Boot shell.
+
+Launch `sudo fdisk /dev/<sdcard>`, clear the partition table with `o`, look up the partitions with `p`, and create new ones with `n`. Now create new partition until you obtain the exact same structure as below.
+
+    Device      Boot   Start     End Sectors  Size Id Type
+    /dev/nbd0p1        49152   79871   30720   15M 83 Linux
+    /dev/nbd0p2       104448 1128447 1024000  500M 83 Linux
+    /dev/nbd0p3      1128448 1390591  262144  128M 83 Linux
+    /dev/nbd0p4      1390592 8388607 6998016  3.3G 83 Linux
+
+> Note: the last partition can be extended to the end of the microSD card
+
+Format the four partitions in ext4.
+
+```sh
+mkfs.ext4 -O "^metadata_csum" /dev/<sdcard>p${partition}
+```
+
+Finally, write the Root kernel flag to a specific sector of the microSD card, which will allow us to interface with the device via USBNet, SSH, etc. and have root access.
+
+```sh
+printf "rooted\n" | dd of=/dev/sdcard bs=512 seek=79872
+```
