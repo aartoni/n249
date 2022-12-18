@@ -42,4 +42,14 @@ Use the following minicom configuration:
     +-----------------------------------------------------------------------+
 ```
 
+## Testing the connection
+
+Turn the device on and press any button to get to the U-Boot shell, now if you type `version` you should be able to obtain the version info.
+
+    => version
+    U-Boot 2020.10 (Dec 18 2022 - 19:24:55 +0100)
+
+    arm-kobo-linux-gnueabihf-gcc (crosstool-NG 1.23.0.72-23ba174 - NiLuJe) 7.5.0
+    GNU ld (crosstool-NG 1.23.0.72-23ba174 - NiLuJe) 2.34
+
 If you're able to see the U-Boot startup logs but not your keypresses you may need to turn the local echo on by pressing Ctrl-A and then E.
