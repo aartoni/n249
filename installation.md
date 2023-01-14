@@ -2,6 +2,19 @@
 
 This guide will help installing the [InkBox](https://inkbox.ddns.net/) open-source operating system on the Kobo Clara HD (N249).
 
+* 1 [Compiling the bootloader](#compiling-the-bootloader)
+* 2 [Building the rootfs](#building-the-rootfs)
+* 3 [Building the kernel](#building-the-kernel)
+    * 3.1 [Putting the public key in place](#putting-the-public-key-in-place)
+    * 3.2 [Compiling the kernel](#compiling-the-kernel)
+* 4 [Sign overlaymount-rootfs](#sign-overlaymount-rootfs)
+* 5 [Create the `boot.scr` file](#create-the-bootscr-file)
+* 6 [Installing InkBox](#installing-inkbox)
+    * 6.1 [Installing the bootloader](#installing-the-bootloader)
+    * 6.2 [Formatting the microSD](#formatting-the-microsd)
+    * 6.3 [Copying the needed files](#copying-the-needed-files)
+* 7 [Post-install](#post-install)
+
 ## Compiling the bootloader
 
 Start by creating a new home directory for the build process and cloning the InkBox repository in it.
@@ -21,7 +34,7 @@ env TOOLCHAINDIR=$PWD/toolchain/arm-kobo-linux-gnueabihf TARGET=arm-kobo-linux-g
 
 You should see the built bootloader in `bootloader/out/u-boot_inkbox.n249.imx`.
 
-## Build the rootfs
+## Building the rootfs
 
 Get the rootfs, but clone it as root to avoid permissions problems later on the Kobo, then build it.
 
@@ -105,7 +118,9 @@ Write the bootloader on the whole device.
 dd if=bootloader/out/u-boot_inkbox.n249.imx of=/dev/<microsd> bs=1K seek=1
 ```
 
-Launch `sudo fdisk /dev/<microsd>`, clear the partition table with `o`, look up the partitions with `p`, and create new ones with `n`. Now create new partition until you obtain the exact same structure as below.
+### Formatting the microSD
+
+Run `sudo fdisk /dev/<microsd>`, clear the partition table with `o`, look up the partitions with `p`, and create new ones with `n`. Now create new partition until you obtain the exact same structure as below.
 
     Device          Boot   Start     End Sectors  Size Id Type
     /dev/<microsd>1        49152   79871   30720   15M 83 Linux
@@ -120,6 +135,8 @@ Format the four partitions in ext4.
 ```sh
 mkfs.ext4 -O "^metadata_csum" /dev/<microsd>${partition}
 ```
+
+### Copying the needed files
 
 Mount the third partition and copy the signed rootfs and overlaymount-rootfs to it.
 
