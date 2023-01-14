@@ -9,7 +9,7 @@ Remove the back cover of the e-reader and follow the [safety measures](safety.md
 Now backup all the partitions at once using `dd`.
 
 ```sh
-dd if=/dev/<microsd> bs=1K conv=sync,noerror | xz > kobo-backup.img.xz
+dd if=/dev/<microsd> bs=4M conv=sync,noerror | xz > kobo-backup.img.xz
 ```
 
 > Note: you can find the block size (`bs`) of the device by running `stat -fc %s /dev/<microsd>`
@@ -21,5 +21,5 @@ dd if=/dev/<microsd> bs=1K conv=sync,noerror | xz > kobo-backup.img.xz
 To restore the backup, simply uncompress the image and write it to the microSD.
 
 ```sh
-xz -dc kobo-backup.img.xz | sudo dd of=/dev/<microsd> bs=1K status=progress
+xz -dc kobo-backup.img.xz | sudo dd of=/dev/<microsd> bs=4M status=progress
 ```
