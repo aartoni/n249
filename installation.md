@@ -7,8 +7,8 @@ This guide will help installing the [InkBox](https://inkbox.ddns.net/) open-sour
 * 3 [Building the kernel](#building-the-kernel)
     * 3.1 [Putting the public key in place](#putting-the-public-key-in-place)
     * 3.2 [Compiling the kernel](#compiling-the-kernel)
-* 4 [Sign overlaymount-rootfs](#sign-overlaymount-rootfs)
-* 5 [Create the `boot.scr` file](#create-the-bootscr-file)
+* 4 [Signing overlaymount-rootfs](#signing-overlaymount-rootfs)
+* 5 [Creating the boot script image](#creating-the-boot-script-image)
 * 6 [Installing InkBox](#installing-inkbox)
     * 6.1 [Installing the bootloader](#installing-the-bootloader)
     * 6.2 [Formatting the microSD](#formatting-the-microsd)
@@ -89,7 +89,7 @@ env GITDIR=$PWD TOOLCHAINDIR=$PWD/toolchain/armv7l-linux-musleabihf-cross/ THREA
 
 You should see the built kernel in `kernel/out/n249/zImage-root`.
 
-## Sign overlaymount-rootfs
+## Signing overlaymount-rootfs
 
 InkBox has a reproducible image builder. Download it and sign the `overlaymount-rootfs.squashfs` file using your private key.
 
@@ -98,9 +98,9 @@ git clone git@github.com:Kobo-InkBox/imgtool.git
 openssl dgst -sha256 -sign private.pem -out imgtool/sd/overlaymount-rootfs.squashfs.dgst imgtool/sd/overlaymount-rootfs.squashfs
 ```
 
-## Create the `boot.scr` file
+## Creating the boot script image
 
-Create the `boot.scr` to automate the execution of the [`uboot-script.sh`](assets/uboot-script.sh) script.
+Create the `boot.scr` U-Boot image to automate the execution of the [`uboot-script.sh`](assets/uboot-script.sh) script.
 
 ```sh
 mkimage -A arm -O linux -T script -n postmarketOS -d uboot-script.sh boot.scr
