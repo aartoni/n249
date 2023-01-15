@@ -8,4 +8,4 @@ echo Loading DTB
 load mmc 0:1 0x83000000 DTB
 
 echo Booting kernel
-bootz 0x80800000 0x83000000
+bootz 0x80800000 - 0x83000000
