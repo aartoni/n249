@@ -1,0 +1,1 @@
+bootcmd=load mmc 0:1 0x84000000 boot.scr ; source 0x84000000
