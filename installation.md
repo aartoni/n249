@@ -118,6 +118,13 @@ Write the bootloader on the whole device.
 dd if=bootloader/out/u-boot_inkbox.n249.imx of=/dev/<microsd> bs=1K seek=1
 ```
 
+Creating an environment [`u-boot-env.txt`](assets/u-boot-env.txt) for the bootloader
+
+```sh
+mkenvimage -p 0 -s 8192 -o u-boot-env.bin u-boot-env.txt
+dd if=u-boot-env.bin of=/dev/<microsd> bs=4096 seek=192
+```
+
 ### Formatting the microSD
 
 Run `sudo fdisk /dev/<microsd>`, clear the partition table with `o`, look up the partitions with `p`, and create new ones with `n`. Now create new partition until you obtain the exact same structure as below.
@@ -170,8 +177,4 @@ printf "rooted\n" | sudo dd of=/dev/<microsd> bs=512 seek=79872
 
 ## Post-install
 
-Unmount the microSD from your computer, put it inside the e-reader, establish a [serial connection](serial.md) and boot the device. Once in the U-Boot shell set the boot script and reboot.
-
-    setenv bootcmd load mmc 0:1 ${loadaddr} /boot.scr \; source ${loadaddr}
-    saveenv
-    reset
+Unmount the microSD from your computer, put it inside the e-reader, establish a [serial connection](serial.md) and boot the device. 

@@ -1,4 +1,4 @@
-led tolinoshine2hd:white:on on
+led e60k02:white:on on
 setenv bootargs console=ttymxc0,115200
 
 echo Loading kernel
