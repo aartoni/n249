@@ -140,7 +140,7 @@ Run `sudo fdisk /dev/<microsd>`, clear the partition table with `o`, look up the
 Format the four partitions in ext4.
 
 ```sh
-mkfs.ext4 -O "^metadata_csum" /dev/<microsd>${partition}
+for partition in 1 2 3 4; do sudo mkfs.ext4 /dev/<microsd>${partition}; done
 ```
 
 ### Copying the needed files
