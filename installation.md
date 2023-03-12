@@ -127,7 +127,13 @@ dd if=u-boot-env.bin of=/dev/<microsd> bs=4096 seek=192
 
 ### Formatting the microSD
 
-Run `sudo fdisk /dev/<microsd>`, clear the partition table with `o`, look up the partitions with `p`, and create new ones with `n`. Now create new partition until you obtain the exact same structure as below.
+Run the [partition script](assets/partition-script.txt) as follows.
+
+```sh
+sudo sfdisk /dev/<microsd> < patition-script.txt
+```
+
+You can check the partition table by running `sudo fdisk -l /dev/<microsd>`, it should have the same structure as below.
 
     Device          Boot   Start     End Sectors  Size Id Type
     /dev/<microsd>1        49152   79871   30720   15M 83 Linux
@@ -135,7 +141,7 @@ Run `sudo fdisk /dev/<microsd>`, clear the partition table with `o`, look up the
     /dev/<microsd>3      1128448 1390591  262144  128M 83 Linux
     /dev/<microsd>4      1390592 8388607 6998016  3.3G 83 Linux
 
-> Note: the last partition can be extended to the end of the microSD card
+> Note: the last partition may be larger or smaller depending on the microSD card size.
 
 Format the four partitions in ext4.
 
