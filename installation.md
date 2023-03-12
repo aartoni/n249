@@ -130,7 +130,7 @@ dd if=u-boot-env.bin of=/dev/<microsd> bs=4096 seek=192
 Run the [partition script](assets/partition-script.txt) as follows.
 
 ```sh
-sudo sfdisk /dev/<microsd> < patition-script.txt
+sudo sfdisk /dev/<microsd> < partition-script.txt
 ```
 
 You can check the partition table by running `sudo fdisk -l /dev/<microsd>`, it should have the same structure as below.
