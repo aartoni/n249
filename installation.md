@@ -6,7 +6,8 @@ This guide will help installing the [InkBox](https://inkbox.ddns.net/) open-sour
 * 2 [Building the rootfs](#building-the-rootfs)
 * 3 [Building the kernel](#building-the-kernel)
     * 3.1 [Putting the public key in place](#putting-the-public-key-in-place)
-    * 3.2 [Compiling the kernel](#compiling-the-kernel)
+    * 3.2 [Compiling the initial ramdisk](#compiling-the-initial-ramdisk)
+    * 3.3 [Compiling the kernel](#compiling-the-kernel)
 * 4 [Signing overlaymount-rootfs](#signing-overlaymount-rootfs)
 * 5 [Creating the boot script image](#creating-the-boot-script-image)
 * 6 [Installing InkBox](#installing-inkbox)
@@ -20,9 +21,9 @@ This guide will help installing the [InkBox](https://inkbox.ddns.net/) open-sour
 Start by creating a new home directory for the build process and cloning the InkBox repository in it.
 
 ```sh
-sudo mkdir -p /home/build/inkbox
+sudo mkdir -p /home/build/inkbox/kernel
 sudo chown -R "$USER:$(id -gn)" /home/build
-cd /home/build/inkbox && git clone git@github.com:Kobo-InkBox/kernel.git
+git clone git@github.com:Kobo-InkBox/kernel.git /home/build/inkbox/kernel
 ```
 
 > Note: the `/home/build/inkbox` path is hardcoded in the make process, avoid changing it.
@@ -48,6 +49,7 @@ sudo env GITDIR=$PWD ./release.sh
 Create your RSA key pair and sign the rootfs with your private key.
 
 ```sh
+cd /home/build/inkbox
 openssl genrsa -out private.pem 2048
 openssl rsa -in private.pem -out public.pem -outform PEM -pubout
 openssl dgst -sha256 -sign private.pem -out rootfs.squashfs.dgst rootfs.squashfs
@@ -78,6 +80,23 @@ You can now check if the squashfs contains your `public.pem` by mounting it.
 sudo mount -t squashfs kernel/initrd/n249/opt/key.sqsh /mnt
 ```
 
+### Compiling the initial ramdisk
+
+Before compiling the kernel, a specific `initrd` is needed. Let's clone it and compile it.
+
+```sh
+git clone git@github.com:Kobo-InkBox/inkbox-os-init.git /home/build/inkbox/os-init
+cd /home/build/inkbox/os-init
+/home/build/inkbox/kernel/toolchain/armv7l-linux-musleabihf-cross/bin/armv7l-linux-musleabihf-gcc init.c -o init -static -D_GNU_SOURCE
+/home/build/inkbox/kernel/toolchain/armv7l-linux-musleabihf-cross/bin/armv7l-linux-musleabihf-strip init
+```
+
+Then we'll overwrite the original `init` file with the compilation output.
+
+```sh
+cp /home/build/inkbox/os-init/init /home/build/inkbox/kernel/initrd/common/init
+```
+
 ### Compiling the kernel
 
 To compile the kernel, just move to the kernel directory and run the build script as follows.
@@ -94,6 +113,7 @@ You should see the built kernel in `kernel/out/n249/zImage-root`.
 InkBox has a reproducible image builder. Download it and sign the `overlaymount-rootfs.squashfs` file using your private key.
 
 ```sh
+cd /home/build/inkbox
 git clone git@github.com:Kobo-InkBox/imgtool.git
 openssl dgst -sha256 -sign private.pem -out imgtool/sd/overlaymount-rootfs.squashfs.dgst imgtool/sd/overlaymount-rootfs.squashfs
 ```
